@@ -4,7 +4,7 @@ services:
     tty: true
     command: tail -f /dev/null
     build:
-      context: ./backend
+      context: ./backend/instagram # apontando para a pasta que contém o código
     container_name: instagram-clone-backend
     ports:
       - "8080:8080"
@@ -15,12 +15,13 @@ services:
     stdin_open: true
     tty: true
     build:
-      context: ./frontend
+      context: ./frontend # apontando para a pasta que contém package.json
     container_name: instagram-clone-frontend
     ports:
       - "3000:3000"
     volumes:
       - ./frontend/instagram/:/home/instagram
+      - /home/instagram/node_modules # preserva os node_modules instalados no container
 
   db:
     image: mariadb:lts

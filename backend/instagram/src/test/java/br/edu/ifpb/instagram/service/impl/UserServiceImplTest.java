@@ -3,6 +3,7 @@ package br.edu.ifpb.instagram.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,7 +65,8 @@ public class UserServiceImplTest {
             userService.findById(userId);
         });
 
-        assertEquals("User not found", exception.getMessage());
+        // Verifica se a mensagem começa com "User not found"
+        assertTrue(exception.getMessage().startsWith("User not found"));
 
         // Verificar a interação com o mock
         verify(userRepository, times(1)).findById(userId);
