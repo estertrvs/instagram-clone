@@ -9,15 +9,18 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.mockito.ArgumentMatchers.any;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -84,7 +87,6 @@ class UserServiceImplTest {
         assertEquals("E-email already in use.", ex.getMessage());
         verify(userRepository, never()).save(any());
     }
-
 
     /**
      * UT-US-03: Rejeitar cadastro quando username já existe
@@ -190,13 +192,11 @@ class UserServiceImplTest {
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.deleteUser(1L));
         assertTrue(ex.getMessage().contains("User not found with id"));
+        assertTrue(ex.getMessage().startsWith("User not found"));
     }
-        /**
+
+    /**
      * UT-US-11: Atualização lança exceção quando UserDto.id é null
-     * Objetivo: Garantir que o método updateUser valide a entrada e não permita atualização sem ID
-     * Pré-condições: Nenhuma
-     * Passos: Chamar updateUser com UserDto.id = null
-     * Resultado esperado: Lança IllegalArgumentException
      */
     @Test
     void updateUser_shouldThrow_whenUserIdIsNull() {
@@ -211,10 +211,6 @@ class UserServiceImplTest {
 
     /**
      * UT-US-12: Criar usuário codifica senha corretamente
-     * Objetivo: Garantir que a senha do usuário seja codificada antes de salvar
-     * Pré-condições: userRepository.existsByEmail e existsByUsername retornam false
-     * Passos: Chamar createUser com UserDto contendo senha
-     * Resultado esperado: PasswordEncoder.encode é chamado e a senha armazenada está codificada
      */
     @Test
     void createUser_shouldEncodePassword() {
@@ -231,10 +227,6 @@ class UserServiceImplTest {
 
     /**
      * UT-US-13: Atualização não altera senha se password for null
-     * Objetivo: Garantir que a senha não seja sobrescrita quando o UserDto.password for null
-     * Pré-condições: userRepository.findById retorna usuário existente
-     * Passos: Chamar updateUser com UserDto.password = null
-     * Resultado esperado: userRepository.save é chamado, senha original permanece
      */
     @Test
     void updateUser_shouldNotChangePassword_whenPasswordIsNull() {
@@ -245,7 +237,6 @@ class UserServiceImplTest {
         UserDto updated = userService.updateUser(partial);
 
         assertNotNull(updated);
-        // Verifica que PasswordEncoder.encode nunca foi chamado
         verify(passwordEncoder, never()).encode(any());
     }
 
